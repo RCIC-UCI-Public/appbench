@@ -1,0 +1,37 @@
+#!/bin/bash
+# process stats from BWA run
+[ -z ${NTASKS+x} ] && NTASKS=1
+[ -z ${DIR+x} ] && DIR=results
+[ -z ${NCPUS+x} ] && NCPUS=$(cat /proc/cpuinfo | grep processor | wc -l)
+
+printstats()
+{
+    FILESTEM=$1
+    BANNER=$2
+    runtimes=()
+    cputimes=()
+    for TASKID in `seq 1 $NTASKS`; do
+        rtm=$(tail -n 3 $DIR/${FILESTEM}.${TASKID} | grep real | awk '{ printf $2 }' | cut -d "m" -f 1 )
+        rts=$(tail -n 3 $DIR/${FILESTEM}.${TASKID} | grep real | awk '{ printf $2 }' | cut -d "m" -f 2 | sed 's/s//')
+        runtimes+=($(echo "$rtm*60+$rts" | bc -l ))
+        utm=$(tail -n 3 $DIR/${FILESTEM}.${TASKID} | grep user | awk '{ printf $2 }' | cut -d "m" -f 1 )
+        uts=$(tail -n 3 $DIR/${FILESTEM}.${TASKID} | grep user | awk '{ printf $2 }' | cut -d "m" -f 2 | sed 's/s//')
+        cputimes+=($(echo "$utm*60+$uts" | bc -l ))
+    done
+    sumrun=$(echo "0 $( echo ${runtimes[@]} | sed 's/ / + /g') + p" | dc)
+    sumcpu=$(echo "0 $( echo ${cputimes[@]} | sed 's/ / + /g') + p" | dc)
+    
+    ## Average RUN time, Average CPU Time
+    avgrun=$(echo "$sumrun/$NTASKS" | bc -l)
+    avgcpu=$(echo "$sumcpu/$NTASKS" | bc -l)
+    efficiency=$(echo "($avgcpu/$avgrun)/($NCPUS/$NTASKS)" | bc -l)
+    echo "$BANNER, $NCPUS, $NTASKS, $avgrun, $avgcpu, $efficiency"
+
+}
+echo "METRIC, NCPUS, NTASKS, AVGRUN, AVGCPU, EFFICIENCY"
+printstats "time.bwa.mem" "BWA-MEM"
+printstats "time-samtools-sort" "SAMTOOLS-SORT"
+printstats "time-picard-tools-sort" "PICARD-SORT"
+printstats "time-samtools-index" "SAMTOOLS-INDEX"
+
+
