@@ -9,7 +9,7 @@ module load picard-tools/1.87
 dir="."
 ref="$dir/pero.scaff.fa"
 # ls testdir/*READ1-Sequences.txt.gz > test.in
-files="$dir/test.in"
+files="$dir/test.input"
 results="$dir/results"
 
 # I ran these command once, to build the indexes that are re-used
