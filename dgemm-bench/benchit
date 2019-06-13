@@ -1,0 +1,13 @@
+#!/bin/bash
+NCPUS=$(cat /proc/cpuinfo | grep processor | wc -l)
+let HALFCPUS=$NCPUS/2
+[ ! $HALFCPUS == 16 ] && CPUS16=16
+
+source /opt/intel/mkl/bin/mklvars.sh intel64
+EXE=./dgemm_timing
+
+for THREAD in 1 2 4 8 $CPUS16 $HALFCPUS $NCPUS; do 
+	echo ">>> MKL threads: $THREAD"
+	MKL_NUM_THREADS=$THREAD $EXE
+	echo "<<<"
+done
