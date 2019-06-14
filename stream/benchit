@@ -1,0 +1,13 @@
+#!/bin/bash
+NCPUS=$(cat /proc/cpuinfo | grep processor | wc -l)
+let HALFCPUS=$NCPUS/2
+[ ! $HALFCPUS == 16 ] && CPUS16=16
+
+module load gcc/6.5.0
+EXE=./stream_c_omp
+
+for THREAD in 1 2 4 8 $CPUS16 $HALFCPUS $NCPUS; do 
+	echo ">>> OPENMP threads: $THREAD"
+	OMP_NUM_THREADS=$THREAD $EXE
+	echo "<<<"
+done
