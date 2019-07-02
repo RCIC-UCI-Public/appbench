@@ -44,17 +44,17 @@ for i in `seq 1 $NTASKS`; do
 
         if [ ! -d $results ]; then mkdir -p $results; fi 
         ### subshell for each TASK, put in the background
-        (                                                                                                                   \       
+        (                                                                                                                   \
              (time bwa mem -t $TASKCPUS -M $ref $forwardname $reversename | samtools view -bS - > $dir/$samplename.bam)     \
-                            &> $results/time.bwa.mem.$TASKID;                                                               \ 
+                            &> $results/time.bwa.mem.$TASKID;                                                               \
              (time samtools sort -m ${MEMCORE}G -@ $TASKCPUS $dir/$samplename.bam  -o $dir/$samplename.sort.bam)            \
                             &> $results/time-samtools-sort.$TASKID;                                                         \
              (time java -Xmx${MEMTASK}g -jar $PICARDTOOLS/AddOrReplaceReadGroups.jar I=$dir/$samplename.sort.bam            \
                              O=$dir/$samplename.RG.bam SORT_ORDER=coordinate RGPL=illumina RGPU=D109LACXX RGLB=$samplename  \
                              RGID=$samplename RGSM=$samplename VALIDATION_STRINGENCY=LENIENT)                               \
-                            &> $results/time-picard-tools-sort.$TASKID;                                                     \  
+                            &> $results/time-picard-tools-sort.$TASKID;                                                     \
              (time samtools index $dir/$samplename.RG.bam)                                                                  \
-                            &> $results/time-samtools-index.$TASKID;                                                         \
+                            &> $results/time-samtools-index.$TASKID;                                                        \
         ) &> $results/run.$TASKID &
 
 done
