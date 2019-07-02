@@ -1,0 +1,16 @@
+B198_R1.fastq.PT.fastq
+B200_R1.fastq.PT.fastq
+B202_R1.fastq.PT.fastq
+B203_R1.fastq.PT.fastq
+B204_R1.fastq.PT.fastq
+B205_R1.fastq.PT.fastq
+B214_R1.fastq.PT.fastq
+B216_R1.fastq.PT.fastq
+B217_R1.fastq.PT.fastq
+B219_R1.fastq.PT.fastq
+B220_R1.fastq.PT.fastq
+B221_R1.fastq.PT.fastq
+B222_R1.fastq.PT.fastq
+B224_R1.fastq.PT.fastq
+B226_R1.fastq.PT.fastq
+B228_R1.fastq.PT.fastq
