@@ -1,0 +1,37 @@
+#!/bin/bash
+module load salmon/0.14.0
+
+[ -z ${NTASKS+x} ] && NTASKS=1
+
+dir="Wunderlich"
+FASTAFILE="Reference/dm6_refgene_2019.fa"
+LISTFILE=../cv7filelist.txt
+INDEX=iso1_sal_index
+
+## How many cores for each TASK
+CPUS=$(cat /proc/cpuinfo | grep processor | wc -l)
+let TASKCPUS=$CPUS/$NTASKS
+
+
+cd $dir
+echo "Performing index of $FASTAFILE"
+time OMP_NUM_THREADS=$CPUS salmon index -t $FASTAFILE  -i $INDEX -k 31 &> time-index
+
+###Run alignment usually do this bit as a job.
+#!/bin/bash
+#$ -N cv7_salmon
+#$ -q bio,pub64
+#$ -t 1-17  ###this bit specifies that this is an array job. 
+
+
+##Iso Array aligning FULL cisvar3 reads to ISO-1 genome.
+###############
+SEQ_LOC=Seq_data/CV7/Trimmed/
+
+for i in `seq 1 $NTASKS`; do 
+        TASKID=$i
+        ID=$(awk "NR==$TASKID" $LISTFILE)
+        echo "Testing ($TASKID): $ID 
+        (time OMP_NUM_THREADS=$TASKCPUS salmon quant -i Reference/Indexes/Dmel/Iso1_sal/$INDEX -l A -1 ${SEQ_LOC}${ID} -2 ${SEQ_LOC}${ID/R1/R2} --validateMappings -o ${ID}_out)  &> time.quant.$TASKID &
+done
+
