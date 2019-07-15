@@ -15,7 +15,7 @@ let TASKCPUS=$CPUS/$NTASKS
 
 cd $dir
 echo "Performing index of $FASTAFILE"
-time OMP_NUM_THREADS=$CPUS salmon index -t $FASTAFILE  -i $INDEX -k 31 &> time-index
+# time OMP_NUM_THREADS=$CPUS salmon index -t $FASTAFILE  -i $INDEX -k 31 &> time-index
 
 ###Run alignment usually do this bit as a job.
 #!/bin/bash
@@ -31,7 +31,7 @@ SEQ_LOC=Seq_data/CV7/Trimmed/
 for i in `seq 1 $NTASKS`; do 
         TASKID=$i
         ID=$(awk "NR==$TASKID" $LISTFILE)
-        echo "Testing ($TASKID): $ID 
-        (time OMP_NUM_THREADS=$TASKCPUS salmon quant -i Reference/Indexes/Dmel/Iso1_sal/$INDEX -l A -1 ${SEQ_LOC}${ID} -2 ${SEQ_LOC}${ID/R1/R2} --validateMappings -o ${ID}_out)  &> time.quant.$TASKID &
+        echo "Testing ($TASKID): $ID" 
+        (time OMP_NUM_THREADS=$TASKCPUS salmon quant -i $INDEX -l A -1 ${SEQ_LOC}${ID} -2 ${SEQ_LOC}${ID/R1/R2} --validateMappings -o ${ID}_out)  &> time.quant.$TASKID &
 done
 
