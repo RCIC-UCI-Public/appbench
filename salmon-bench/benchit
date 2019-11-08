@@ -15,7 +15,7 @@ let TASKCPUS=$CPUS/$NTASKS
 
 cd $dir
 echo "Performing index of $FASTAFILE"
-# time OMP_NUM_THREADS=$CPUS salmon index -t $FASTAFILE  -i $INDEX -k 31 &> time-index
+time OMP_NUM_THREADS=$CPUS salmon index -t $FASTAFILE  -i $INDEX -k 31 &> time-index
 
 ###Run alignment usually do this bit as a job.
 #!/bin/bash
