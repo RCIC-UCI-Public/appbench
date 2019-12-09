@@ -14,8 +14,7 @@ dgemm_timing_openblas: dgemm_with_timing_openblas.c
 dgemm_timing: dgemm_with_timing.c
 	( module load gcc/8.3.0; \
 	  module load mkl/2019.5.281; \
-	  source `which mklvars.sh` intel64; \
-	$(CC) $(CFLAGS) dgemm_with_timing.c -o dgemm_timing -I/opt/intel/mkl/include -L/opt/intel/lib -L/opt/intel/mkl/lib -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm \
+	$(CC) $(CFLAGS) dgemm_with_timing.c -o dgemm_timing -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm \
 	)
 
 bench: $(BENCHMARKS)
@@ -24,3 +23,4 @@ bench: $(BENCHMARKS)
 
 clean:
 	- /bin/rm $(BENCHMARKS)
+	  
