@@ -1,0 +1,15 @@
+#!/bin/bash
+NCPUS=$(cat /proc/cpuinfo | grep processor | wc -l)
+let HALFCPUS=$NCPUS/2
+[ ! $HALFCPUS == 16 ] && CPUS16=16
+
+module purge
+module load OpenBLAS
+EXE=./dgemm_timing_openblas
+
+for THREAD in 1 2 4 8 $CPUS16 $HALFCPUS $NCPUS; do 
+	echo ">>> OPENBLAS threads: $THREAD"
+	OPENBLAS_NUM_THREADS=$THREAD /usr/bin/time --verbose $EXE
+	echo "<<<"
+done
+module purge
