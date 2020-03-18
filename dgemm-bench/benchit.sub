@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Account to charge
+#SBATCH -A ppapadop_lab 
+# Queue
+#SBATCH -p standard                 # partition (queue)
+# Job Parameters
+#SBATCH -N 1                      # number of nodes
+#SBATCH -n 40                      # number of cores
+#SBATCH -t 0-2:00                 # time (D-HH:MM)
+#SBATCH -o benchit.%j.out        # STDOUT
+#SBATCH -e benchit.%j.err        # STDERR
+##SBATCH --tasks-per-node=16
+#SBATCH --mail-type=BEGIN,END     # notifications for job done & fail
+#SBATCH --mail-user=ppapadop@uci.edu # send-to address
+
+hostname
+./benchit

@@ -3,9 +3,8 @@ NCPUS=$(cat /proc/cpuinfo | grep processor | wc -l)
 let HALFCPUS=$NCPUS/2
 [ ! $HALFCPUS == 16 ] && CPUS16=16
 
-module load gcc/8.3.0
+module load gcc/8.4.0
 module load mkl/2019.5.281
-source `which mklvars.sh` intel64
 EXE=./dgemm_timing
 
 for THREAD in 4 8 $CPUS16 $HALFCPUS $NCPUS; do 
